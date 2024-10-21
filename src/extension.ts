@@ -95,7 +95,7 @@ import '../${featureFolderName}_datasource.dart';
 /// {@endtemplate}
 final class Local${upcaseFeatureName}Datasource implements I${upcaseFeatureName}Datasource {
 	/// {@macro local_${downcaseFeatureName}_datasource}
-	const ${upcaseFeatureName}();
+	const Local${upcaseFeatureName}Datasource();
 }
 `
         );
