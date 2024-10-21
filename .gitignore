@@ -1,3 +1,19 @@
-/.vscode
-/node_modules
-/out
+# Dependencies
+node_modules/
+
+# Build outputs
+out/
+dist/
+
+
+# Logs
+logs/
+npm-debug.log*
+yarn-error.log*
+
+# Compiled VSIX files
+*.vsix
+
+# Environment variables or secret files
+.env
+.env.local
