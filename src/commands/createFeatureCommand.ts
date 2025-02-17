@@ -53,7 +53,7 @@ export function registerCreateFeatureCommand(context: ExtensionContext) {
         createFile(
           join(datasources, `remote_${featureFolderName}_datasource.dart`),
           `
-import '../../../../../core/components/rest_client/rest_client.dart';
+import '../../../../common/component/rest_client/rest_client.dart';
 
 /// {@template i_remote_${camelCaseFeatureName}_datasource}
 ///  Interface for IRemote${pascalCaseFeatureName}Datasource.
@@ -108,13 +108,13 @@ abstract interface class I${pascalCaseFeatureName}Repository {
 final class ${pascalCaseFeatureName}Repository implements I${pascalCaseFeatureName}Repository {
   /// {@macro ${camelCaseFeatureName}_repository}
   const ${pascalCaseFeatureName}Repository(
-    ILocal${pascalCaseFeatureName}Datasource local${pascalCaseFeatureName}Datasource,
-    IRemote${pascalCaseFeatureName}Datasource remote${pascalCaseFeatureName}Datasource,
-  ) : _local${pascalCaseFeatureName}Datasource = local${pascalCaseFeatureName}Datasource,
-		_remote${pascalCaseFeatureName}Datasource = remote${pascalCaseFeatureName}Datasource;
+    ILocal${pascalCaseFeatureName}Datasource localDatasource,
+    IRemote${pascalCaseFeatureName}Datasource remoteDatasource,
+  ) : _localDatasource = localDatasource,
+		_remoteDatasource = remoteDatasource;
 
-  final ILocal${pascalCaseFeatureName}Datasource _local${pascalCaseFeatureName}Datasource;
-  final IRemote${pascalCaseFeatureName}Datasource _remote${pascalCaseFeatureName}Datasource;
+  final ILocal${pascalCaseFeatureName}Datasource _localDatasource;
+  final IRemote${pascalCaseFeatureName}Datasource _remoteDatasource;
 }
 `
         );
