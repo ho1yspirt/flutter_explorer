@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import { ExtensionContext, commands, Uri, window } from "vscode";
 
-import "../utils/prototypes";
+import { toCamelCase, toPascalCase, toSnakeCase } from "../utils/stringUtil";
 
 export function registerCreateFeatureCommand(context: ExtensionContext) {
   let disposable = commands.registerCommand(
@@ -11,61 +11,65 @@ export function registerCreateFeatureCommand(context: ExtensionContext) {
       if (uri && uri.fsPath) {
         const featureFolderName = await window.showInputBox({
           prompt: "Enter the name for the root parent folder",
-          placeHolder: "feature",
+          placeHolder: "feature_name",
         });
         if (!featureFolderName) {
           window.showWarningMessage("No folder name was provided.");
           return;
         }
 
-        const camelCaseFeatureName = featureFolderName.fromSnakeToCamelCase();
-        const pascalCaseFeatureName = featureFolderName.fromSnakeToPascalCase();
+        const snakeCaseFeatureName = toSnakeCase(featureFolderName);
+        const camelCaseFeatureName = toCamelCase(featureFolderName);
+        const pascalCaseFeatureName = toPascalCase(featureFolderName);
 
-        const featurePath = join(uri.fsPath, featureFolderName);
+        const featurePath = join(uri.fsPath, snakeCaseFeatureName);
         if (!existsSync(featurePath)) mkdirSync(featurePath);
 
         const blocPath = join(featurePath, "bloc");
-        const servicesPath = join(featurePath, "services");
         const dataPath = join(featurePath, "data");
+        const servicePath = join(featurePath, "service");
         const widgetPath = join(featurePath, "widget");
         mkdirSync(blocPath);
-        mkdirSync(servicesPath);
         mkdirSync(dataPath);
+        mkdirSync(servicePath);
         mkdirSync(widgetPath);
 
-        const datasources = join(dataPath, "datasources");
-        mkdirSync(datasources);
+        const datasourcePath = join(dataPath, "datasource");
+        mkdirSync(datasourcePath);
 
-        const repositories = join(dataPath, "repositories");
-        mkdirSync(repositories);
+        const repositoryPath = join(dataPath, "repository");
+        mkdirSync(repositoryPath);
 
-        const models = join(dataPath, "models");
-        mkdirSync(models);
+        const tablePath = join(dataPath, "table");
+        mkdirSync(tablePath);
 
-        const screens = join(widgetPath, "screens");
-        mkdirSync(screens);
+        const modelPath = join(dataPath, "model");
+        mkdirSync(modelPath);
 
-        mkdirSync(join(widgetPath, "widgets"));
+        const screenPath = join(widgetPath, "screen");
+        mkdirSync(screenPath);
+
+        const decompositedWidgetPath = join(widgetPath, "widget");
+        mkdirSync(decompositedWidgetPath);
 
         const createFile = (filePath: string, content: string) =>
           writeFileSync(filePath, content);
 
         createFile(
-          join(datasources, `remote_${featureFolderName}_datasource.dart`),
+          join(
+            datasourcePath,
+            `remote_${snakeCaseFeatureName}_datasource.dart`
+          ),
           `
-import '../../../../common/component/rest_client/rest_client.dart';
-
-/// {@template i_remote_${camelCaseFeatureName}_datasource}
-///  Interface for IRemote${pascalCaseFeatureName}Datasource.
-/// {@endtemplate}
-abstract interface class IRemote${pascalCaseFeatureName}Datasource {}
-
-/// {@template remote_${camelCaseFeatureName}_datasource}
+/// {@template remote_${snakeCaseFeatureName}_datasource}
 /// Remote${pascalCaseFeatureName}Datasource.
 /// {@endtemplate}
-final class Remote${pascalCaseFeatureName}Datasource implements IRemote${pascalCaseFeatureName}Datasource {
-	/// {@macro remote_${camelCaseFeatureName}_datasource}
-	const Remote${pascalCaseFeatureName}Datasource(
+abstract interface class Remote${pascalCaseFeatureName}Datasource {}
+
+/// {@macro remote_${snakeCaseFeatureName}_datasource}
+final class Remote${pascalCaseFeatureName}DatasourceImpl implements Remote${pascalCaseFeatureName}Datasource {
+	/// {@macro remote_${snakeCaseFeatureName}_datasource}
+	const Remote${pascalCaseFeatureName}DatasourceImpl(
 		IRestClient restClient,
 	) : _restClient = restClient;
 
@@ -74,40 +78,33 @@ final class Remote${pascalCaseFeatureName}Datasource implements IRemote${pascalC
 `
         );
         createFile(
-          join(datasources, `local_${featureFolderName}_datasource.dart`),
+          join(datasourcePath, `local_${snakeCaseFeatureName}_datasource.dart`),
           `
-/// {@template i_local${camelCaseFeatureName}_datasource}
-///  Interface for ILocal${pascalCaseFeatureName}Datasource.
-/// {@endtemplate}
-abstract interface class ILocal${pascalCaseFeatureName}Datasource {}
-
-/// {@template local_${camelCaseFeatureName}_datasource}
+/// {@template local_${snakeCaseFeatureName}_datasource}
 /// Local${pascalCaseFeatureName}Datasource.
 /// {@endtemplate}
-final class Local${pascalCaseFeatureName}Datasource implements ILocal${pascalCaseFeatureName}Datasource {
-	/// {@macro local_${camelCaseFeatureName}_datasource}
-	const Local${pascalCaseFeatureName}Datasource();
+abstract interface class Local${pascalCaseFeatureName}Datasource {}
+
+/// {@macro local_${snakeCaseFeatureName}_datasource}
+final class Local${pascalCaseFeatureName}DatasourceImpl implements Local${pascalCaseFeatureName}Datasource {
+	/// {@macro local_${snakeCaseFeatureName}_datasource}
+	const Local${pascalCaseFeatureName}DatasourceImpl();
 }
 `
         );
         createFile(
-          join(repositories, `${featureFolderName}_repository.dart`),
+          join(repositoryPath, `${snakeCaseFeatureName}_repository.dart`),
           `
-import '../datasources/local_${featureFolderName}_datasource.dart';
-import '../datasources/remote_${featureFolderName}_datasource.dart';
-
-/// {@template i_${camelCaseFeatureName}_repository}
-///  Interface for ${pascalCaseFeatureName}Repository.
+/// {@template ${snakeCaseFeatureName}_repository}
+/// ${pascalCaseFeatureName}Repository.
 /// {@endtemplate}
-abstract interface class I${pascalCaseFeatureName}Repository {
+abstract interface class ${pascalCaseFeatureName}Repository {
 }
 
-/// {@template ${camelCaseFeatureName}_repository}
-/// ${pascalCaseFeatureName}Repository
-/// {@endtemplate}
-final class ${pascalCaseFeatureName}Repository implements I${pascalCaseFeatureName}Repository {
-  /// {@macro ${camelCaseFeatureName}_repository}
-  const ${pascalCaseFeatureName}Repository(
+/// {@macro ${snakeCaseFeatureName}_repository}
+final class ${pascalCaseFeatureName}RepositoryImpl implements ${pascalCaseFeatureName}Repository {
+  /// {@macro ${snakeCaseFeatureName}_repository}
+  const ${pascalCaseFeatureName}RepositoryImpl(
     ILocal${pascalCaseFeatureName}Datasource localDatasource,
     IRemote${pascalCaseFeatureName}Datasource remoteDatasource,
   ) : _localDatasource = localDatasource,
@@ -119,33 +116,31 @@ final class ${pascalCaseFeatureName}Repository implements I${pascalCaseFeatureNa
 `
         );
         createFile(
-          join(models, `${featureFolderName}_model.dart`),
+          join(modelPath, `${snakeCaseFeatureName}_model.dart`),
           `
-/// {@template ${featureFolderName}_model}
+/// {@template ${snakeCaseFeatureName}_model}
 /// ${pascalCaseFeatureName}Model.
 /// {@endtemplate}
 final class ${pascalCaseFeatureName}Model  {
-  /// {@macro ${featureFolderName}_model}
+  /// {@macro ${snakeCaseFeatureName}_model}
   const ${pascalCaseFeatureName}Model();
 }
   `
         );
         createFile(
-          join(screens, `${featureFolderName}_screen.dart`),
+          join(screenPath, `${snakeCaseFeatureName}_screen.dart`),
           `
 import 'package:flutter/material.dart';
 
-/// {@template ${featureFolderName}_screen}
+/// {@template ${snakeCaseFeatureName}_screen}
 /// ${pascalCaseFeatureName}Screen widget.
 /// {@endtemplate}
 class ${pascalCaseFeatureName}Screen extends StatelessWidget {
-  /// {@macro ${featureFolderName}_screen}
-  const ${pascalCaseFeatureName}Screen({
-    super.key, // ignore: unused_element
-  });
+  /// {@macro ${snakeCaseFeatureName}_screen}
+  const ${pascalCaseFeatureName}Screen({super.key});
 
-  /// Screen route name
-  static const name = '${pascalCaseFeatureName}Screen';
+  /// Screen route
+  static const name = AppRoute.${camelCaseFeatureName};
 
   @override
   Widget build(BuildContext context) => const Scaffold();
