@@ -3,7 +3,7 @@
   "name": "flutter-explorer",
   "displayName": "Flutter Explorer",
   "description": "Custom snippets",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/ho1yspirt/flutter_explorer.git"
@@ -29,7 +29,7 @@
         {
           "command": "extension.createSpecificFolder",
           "when": "explorerResourceIsFolder",
-          "group": "Flutter Explorer"
+          "group": "1_modification"
         }
       ]
     }
