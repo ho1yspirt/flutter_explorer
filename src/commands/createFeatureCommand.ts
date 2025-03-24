@@ -70,7 +70,7 @@ abstract interface class Remote${pascalCaseFeatureName}Datasource {}
 final class Remote${pascalCaseFeatureName}DatasourceImpl implements Remote${pascalCaseFeatureName}Datasource {
 	/// {@macro remote_${snakeCaseFeatureName}_datasource}
 	const Remote${pascalCaseFeatureName}DatasourceImpl(
-		IRestClient restClient,
+		RestClient restClient,
 	) : _restClient = restClient;
 
 	final IRestClient _restClient;
@@ -105,13 +105,13 @@ abstract interface class ${pascalCaseFeatureName}Repository {
 final class ${pascalCaseFeatureName}RepositoryImpl implements ${pascalCaseFeatureName}Repository {
   /// {@macro ${snakeCaseFeatureName}_repository}
   const ${pascalCaseFeatureName}RepositoryImpl(
-    ILocal${pascalCaseFeatureName}Datasource localDatasource,
-    IRemote${pascalCaseFeatureName}Datasource remoteDatasource,
+    Local${pascalCaseFeatureName}Datasource localDatasource,
+    Remote${pascalCaseFeatureName}Datasource remoteDatasource,
   ) : _localDatasource = localDatasource,
 		_remoteDatasource = remoteDatasource;
 
-  final ILocal${pascalCaseFeatureName}Datasource _localDatasource;
-  final IRemote${pascalCaseFeatureName}Datasource _remoteDatasource;
+  final Local${pascalCaseFeatureName}Datasource _localDatasource;
+  final Remote${pascalCaseFeatureName}Datasource _remoteDatasource;
 }
 `
         );
