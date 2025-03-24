@@ -10,18 +10,18 @@ This Visual Studio Code extension adds a custom context menu option that allows 
 📁{feature name}
 └── 📁bloc
 └── 📁data
-    └── 📁datasources
+    └── 📁datasource
         └──🔷local_{feature name}_datasource.dart
         └──🔷remote_{feature name}_datasource.dart
-    └── 📁models
+    └── 📁model
         └──🔷{feature name}_model.dart
-    └── 📁repositories
+    └── 📁repository
         └──🔷{feature name}_repository.dart
-└── 📁services
+└── 📁service
 └── 📁widget
-    └── 📁screens
+    └── 📁screen
         └──🔷{feature name}_screen.dart
-    └── 📁widgets
+    └── 📁widget
 ```
 
 ## Features
