@@ -34,12 +34,6 @@ export function registerCreateFeatureCommand(context: ExtensionContext) {
         mkdirSync(servicePath);
         mkdirSync(widgetPath);
 
-        const datasourcePath = join(dataPath, "datasource");
-        mkdirSync(datasourcePath);
-
-        const repositoryPath = join(dataPath, "repository");
-        mkdirSync(repositoryPath);
-
         const tablePath = join(dataPath, "table");
         mkdirSync(tablePath);
 
@@ -56,64 +50,77 @@ export function registerCreateFeatureCommand(context: ExtensionContext) {
           writeFileSync(filePath, content);
 
         createFile(
-          join(
-            datasourcePath,
-            `remote_${snakeCaseFeatureName}_datasource.dart`
-          ),
+          join(dataPath, `${snakeCaseFeatureName}_local_datasource.dart`),
           `
-/// {@template remote_${snakeCaseFeatureName}_datasource}
-/// Remote${pascalCaseFeatureName}Datasource.
+/// {@template ${snakeCaseFeatureName}_local_datasource}
+/// ${pascalCaseFeatureName}LocalDatasource.
 /// {@endtemplate}
-abstract interface class Remote${pascalCaseFeatureName}Datasource {}
+abstract interface class ${pascalCaseFeatureName}LocalDatasource {}
 
-/// {@macro remote_${snakeCaseFeatureName}_datasource}
-final class Remote${pascalCaseFeatureName}DatasourceImpl implements Remote${pascalCaseFeatureName}Datasource {
-	/// {@macro remote_${snakeCaseFeatureName}_datasource}
-	const Remote${pascalCaseFeatureName}DatasourceImpl(
+/// {@macro ${snakeCaseFeatureName}_local_datasource}
+final class ${pascalCaseFeatureName}LocalDatasourceImpl implements ${pascalCaseFeatureName}LocalDatasource {
+	/// {@macro ${snakeCaseFeatureName}_local_datasource}
+	const ${pascalCaseFeatureName}LocalDatasourceImpl();
+}`
+        );
+        createFile(
+          join(dataPath, `${snakeCaseFeatureName}_remote_datasource.dart`),
+          `
+/// {@template ${snakeCaseFeatureName}_remote_datasource}
+/// ${pascalCaseFeatureName}RemoteDatasource.
+/// {@endtemplate}
+abstract interface class ${pascalCaseFeatureName}RemoteDatasource {}
+
+/// {@macro ${snakeCaseFeatureName}_remote_datasource}
+final class ${pascalCaseFeatureName}RemoteDatasourceImpl implements ${pascalCaseFeatureName}RemoteDatasource {
+	/// {@macro ${snakeCaseFeatureName}_remote_datasource}
+	const ${pascalCaseFeatureName}RemoteDatasourceImpl(
 		RestClient restClient,
 	) : _restClient = restClient;
 
 	final IRestClient _restClient;
-}
-`
+}`
         );
         createFile(
-          join(datasourcePath, `local_${snakeCaseFeatureName}_datasource.dart`),
-          `
-/// {@template local_${snakeCaseFeatureName}_datasource}
-/// Local${pascalCaseFeatureName}Datasource.
-/// {@endtemplate}
-abstract interface class Local${pascalCaseFeatureName}Datasource {}
-
-/// {@macro local_${snakeCaseFeatureName}_datasource}
-final class Local${pascalCaseFeatureName}DatasourceImpl implements Local${pascalCaseFeatureName}Datasource {
-	/// {@macro local_${snakeCaseFeatureName}_datasource}
-	const Local${pascalCaseFeatureName}DatasourceImpl();
-}
-`
-        );
-        createFile(
-          join(repositoryPath, `${snakeCaseFeatureName}_repository.dart`),
+          join(dataPath, `${snakeCaseFeatureName}_repository.dart`),
           `
 /// {@template ${snakeCaseFeatureName}_repository}
 /// ${pascalCaseFeatureName}Repository.
 /// {@endtemplate}
-abstract interface class ${pascalCaseFeatureName}Repository {
-}
+abstract interface class ${pascalCaseFeatureName}Repository {}
 
 /// {@macro ${snakeCaseFeatureName}_repository}
 final class ${pascalCaseFeatureName}RepositoryImpl implements ${pascalCaseFeatureName}Repository {
   /// {@macro ${snakeCaseFeatureName}_repository}
   const ${pascalCaseFeatureName}RepositoryImpl(
-    Local${pascalCaseFeatureName}Datasource localDatasource,
-    Remote${pascalCaseFeatureName}Datasource remoteDatasource,
+    ${pascalCaseFeatureName}LocalDatasource localDatasource,
+    ${pascalCaseFeatureName}RemoteDatasource remoteDatasource,
   ) : _localDatasource = localDatasource,
 		_remoteDatasource = remoteDatasource;
 
-  final Local${pascalCaseFeatureName}Datasource _localDatasource;
-  final Remote${pascalCaseFeatureName}Datasource _remoteDatasource;
-}
-`
+  final ${pascalCaseFeatureName}LocalDatasource _localDatasource;
+  final ${pascalCaseFeatureName}RemoteDatasource _remoteDatasource;
+}`
+        );
+        createFile(
+          join(modelPath, `${snakeCaseFeatureName}_dependencies.dart`),
+          `
+import 'package:flutter/material.dart';
+
+/// {@template ${snakeCaseFeatureName}_dependencies}
+/// ${pascalCaseFeatureName}Dependencies.
+/// {@endtemplate}
+final class ${pascalCaseFeatureName}Dependencies  {
+  /// {@macro ${snakeCaseFeatureName}_dependencies}
+  factory ${pascalCaseFeatureName}Dependencies.of(BuildContext context) => ${pascalCaseFeatureName}Scope.of(context);
+
+  /// {@macro ${snakeCaseFeatureName}_dependencies}
+  ${pascalCaseFeatureName}Dependencies();
+
+  // repositories
+  late final ${pascalCaseFeatureName}Repository repository;
+  // blocs
+}`
         );
         createFile(
           join(modelPath, `${snakeCaseFeatureName}_model.dart`),
@@ -124,8 +131,7 @@ final class ${pascalCaseFeatureName}RepositoryImpl implements ${pascalCaseFeatur
 final class ${pascalCaseFeatureName}Model  {
   /// {@macro ${snakeCaseFeatureName}_model}
   const ${pascalCaseFeatureName}Model();
-}
-  `
+}`
         );
         createFile(
           join(screenPath, `${snakeCaseFeatureName}_screen.dart`),
@@ -144,8 +150,60 @@ class ${pascalCaseFeatureName}Screen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const Scaffold();
+}`
+        );
+        createFile(
+          join(widgetPath, `${snakeCaseFeatureName}_scope.dart`),
+          `
+import 'package:flutter/material.dart';
+
+/// {@template ${snakeCaseFeatureName}_scope}
+/// ${pascalCaseFeatureName}Scope widget.
+/// {@endtemplate}
+class ${pascalCaseFeatureName}Scope extends StatelessWidget {
+  /// {@macro ${snakeCaseFeatureName}_scope}
+  const ${pascalCaseFeatureName}Scope({super.key, required this.dependencies, required this.child});
+
+  final ${pascalCaseFeatureName}Dependencies dependencies;
+  final Widget child;
+
+  static ${pascalCaseFeatureName}Dependencies of(BuildContext context) =>
+      _${pascalCaseFeatureName}Scope.of(context);
+
+  @override
+  Widget build(BuildContext context) =>
+      _${pascalCaseFeatureName}Scope(dependencies: dependencies, child: child);
 }
-	`
+  
+/// {@macro ${snakeCaseFeatureName}_scope}
+class _${pascalCaseFeatureName}Scope extends InheritedWidget {
+  /// {@macro ${snakeCaseFeatureName}_scope}
+  const _${pascalCaseFeatureName}Scope({
+    super.key, // ignore: unused_element_parameter
+    required this.dependencies, 
+    required super.child,
+  });
+
+  final ${pascalCaseFeatureName}Dependencies dependencies;
+
+  // dart format off
+  static _${pascalCaseFeatureName}Scope? _maybeOf(BuildContext context) =>
+    context.getElementForInheritedWidgetOfExactType<_${pascalCaseFeatureName}Scope>()
+      ?.widget as _${pascalCaseFeatureName}Scope?;
+  // dart format on
+
+  static Never _notFoundInheritedWidgetOfExactType() =>
+      throw ArgumentError('Out of scope');
+
+  static _${pascalCaseFeatureName}Scope _of(BuildContext context) =>
+      _maybeOf(context) ?? _notFoundInheritedWidgetOfExactType();
+
+  static ${pascalCaseFeatureName}Dependencies of(BuildContext context) =>
+      _of(context).dependencies;
+
+  @override
+  bool updateShouldNotify(_${pascalCaseFeatureName}Scope oldWidget) => false;
+}`
         );
 
         window.showInformationMessage(
