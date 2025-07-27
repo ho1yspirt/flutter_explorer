@@ -20,16 +20,34 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.createSpecificFolder",
-        "title": "Flutter Explorer: New Flutter Feature..."
+        "command": "extension.createCreateFeatureFolder",
+        "title": "FE: New Feature"
+      },
+      {
+        "command": "extension.createDevolutionFeatureFolder",
+        "title": "FE: New Devolution Feature"
+      },
+      {
+        "command": "extension.createDevolutionScreen",
+        "title": "FE: New Devolution Screen"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "extension.createSpecificFolder",
+          "command": "extension.createCreateFeatureFolder",
           "when": "explorerResourceIsFolder",
-          "group": "1_modification"
+          "group": "flutterExplorerGroup@1"
+        },
+        {
+          "command": "extension.createDevolutionFeatureFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "flutterExplorerGroup@1"
+        },
+        {
+          "command": "extension.createDevolutionScreen",
+          "when": "explorerResourceIsFolder",
+          "group": "flutterExplorerGroup@1"
         }
       ]
     }
