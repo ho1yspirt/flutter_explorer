@@ -6,7 +6,7 @@ import { toCamelCase, toPascalCase, toSnakeCase } from "../utils/stringUtil";
 
 export function registerCreateFeatureCommand(context: ExtensionContext) {
   let disposable = commands.registerCommand(
-    "extension.createCreateFeatureFolder",
+    "extension.createFeatureFolder",
     async (uri: Uri) => {
       if (uri && uri.fsPath) {
         const featureFolderName = await window.showInputBox({
@@ -26,14 +26,20 @@ export function registerCreateFeatureCommand(context: ExtensionContext) {
         if (!existsSync(featurePath)) mkdirSync(featurePath);
 
         const blocPath = join(featurePath, "bloc");
-        const dataPath = join(featurePath, "data");
-        const modelPath = join(featurePath, "model");
-        const widgetPath = join(featurePath, "widget");
         mkdirSync(blocPath);
+        const corePath = join(featurePath, "core");
+        mkdirSync(corePath);
+        const dataPath = join(featurePath, "data");
         mkdirSync(dataPath);
+        const modelPath = join(featurePath, "model");
         mkdirSync(modelPath);
+        const widgetPath = join(featurePath, "widget");
         mkdirSync(widgetPath);
 
+        const utilPath = join(corePath, "util");
+        mkdirSync(utilPath);
+        const extensionPath = join(corePath, "extension");
+        mkdirSync(extensionPath);
         const screenPath = join(widgetPath, "screen");
         mkdirSync(screenPath);
         const decompositedWidgetPath = join(widgetPath, "widget");
@@ -59,19 +65,25 @@ final class ${pascalCaseFeatureName}LocalDatasourceImpl implements ${pascalCaseF
         createFile(
           join(dataPath, `${snakeCaseFeatureName}_remote_datasource.dart`),
           `
+import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
+
+part '${snakeCaseFeatureName}_remote_datasource.g.dart';
+
 /// {@template ${snakeCaseFeatureName}_remote_datasource}
 /// ${pascalCaseFeatureName}RemoteDatasource.
 /// {@endtemplate}
 abstract interface class ${pascalCaseFeatureName}RemoteDatasource {}
 
 /// {@macro ${snakeCaseFeatureName}_remote_datasource}
-final class ${pascalCaseFeatureName}RemoteDatasourceImpl implements ${pascalCaseFeatureName}RemoteDatasource {
+@RestApi()
+abstract class ${pascalCaseFeatureName}RemoteDatasourceImpl implements ${pascalCaseFeatureName}RemoteDatasource {
 	/// {@macro ${snakeCaseFeatureName}_remote_datasource}
-	const ${pascalCaseFeatureName}RemoteDatasourceImpl(
-		RestClient restClient,
-	) : _restClient = restClient;
-
-	final RestClient _restClient;
+	factory ${pascalCaseFeatureName}RemoteDatasourceImpl(
+		Dio dio,{
+    String? baseUrl,
+    ParseErrorLogger? errorLogger,
+  }) = _${pascalCaseFeatureName}RemoteDatasourceImpl;
 }`
         );
         createFile(
@@ -103,46 +115,16 @@ import 'package:flutter/material.dart';
 /// {@template ${snakeCaseFeatureName}_dependencies}
 /// ${pascalCaseFeatureName}Dependencies.
 /// {@endtemplate}
-final class ${pascalCaseFeatureName}Dependencies  {
-  /// {@macro ${snakeCaseFeatureName}_dependencies}
-  factory ${pascalCaseFeatureName}Dependencies.of(BuildContext context) => ${pascalCaseFeatureName}Scope.of(context);
-
+final class ${pascalCaseFeatureName}Dependencies {
   /// {@macro ${snakeCaseFeatureName}_dependencies}
   ${pascalCaseFeatureName}Dependencies();
+
+  /// {@macro ${snakeCaseFeatureName}_dependencies}
+  factory ${pascalCaseFeatureName}Dependencies.of(BuildContext context) => ${pascalCaseFeatureName}Scope.of(context);
 
   // repositories
   late final ${pascalCaseFeatureName}Repository repository;
   // blocs
-}`
-        );
-        createFile(
-          join(modelPath, `${snakeCaseFeatureName}_model.dart`),
-          `
-/// {@template ${snakeCaseFeatureName}_model}
-/// ${pascalCaseFeatureName}Model.
-/// {@endtemplate}
-final class ${pascalCaseFeatureName}Model  {
-  /// {@macro ${snakeCaseFeatureName}_model}
-  const ${pascalCaseFeatureName}Model();
-}`
-        );
-        createFile(
-          join(screenPath, `${snakeCaseFeatureName}_screen.dart`),
-          `
-import 'package:flutter/material.dart';
-
-/// {@template ${snakeCaseFeatureName}_screen}
-/// ${pascalCaseFeatureName}Screen widget.
-/// {@endtemplate}
-class ${pascalCaseFeatureName}Screen extends StatelessWidget {
-  /// {@macro ${snakeCaseFeatureName}_screen}
-  const ${pascalCaseFeatureName}Screen({super.key});
-
-  /// Screen route
-  static const name = AppRoute.${camelCaseFeatureName};
-
-  @override
-  Widget build(BuildContext context) => const Scaffold();
 }`
         );
         createFile(

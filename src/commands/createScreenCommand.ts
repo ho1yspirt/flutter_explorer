@@ -4,11 +4,9 @@ import { ExtensionContext, commands, Uri, window } from "vscode";
 
 import { toCamelCase, toPascalCase, toSnakeCase } from "../utils/stringUtil";
 
-export function registerCreateDevolutionScreenCommand(
-  context: ExtensionContext
-) {
+export function registerCreateScreenCommand(context: ExtensionContext) {
   let disposable = commands.registerCommand(
-    "extension.createDevolutionScreen",
+    "extension.createScreen",
     async (uri: Uri) => {
       if (uri && uri.fsPath) {
         const screenName = await window.showInputBox({
@@ -33,20 +31,20 @@ export function registerCreateDevolutionScreenCommand(
 import 'package:app_shared/navigator.dart';
 import 'package:flutter/material.dart';
 
-/// {@template ${snakeCaseScreenName}_screen.route}
-/// ${pascalCaseScreenName}Route.
+/// {@template ${snakeCaseScreenName}_screen.page}
+/// ${pascalCaseScreenName}Page.
 /// {@endtemplate}
-final class ${pascalCaseScreenName}Route extends AppPlatformPage {
-  /// {@macro ${snakeCaseScreenName}_screen.route}
-  const ${pascalCaseScreenName}Route()
+final class ${pascalCaseScreenName}Page extends AppPlatformPage {
+  /// {@macro ${snakeCaseScreenName}_screen.page}
+  const ${pascalCaseScreenName}Page()
     : super(
-        name: _name,
-        key: const ValueKey<String>(_name),
+        name: routeName,
+        key: const ValueKey<String>(routeName),
         arguments: null,
         child: const ${pascalCaseScreenName}Screen(),
       );
 
-  static const _name = '${camelCaseScreenName}';
+  static const routeName = '${camelCaseScreenName}';
 }
 
 /// {@template ${snakeCaseScreenName}_screen}
@@ -66,25 +64,20 @@ class _${pascalCaseScreenName}ScreenState extends State<${pascalCaseScreenName}S
   @override
   void initState() {
     super.initState();
-    // Initial state initialization
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // The configuration of InheritedWidgets has changed
-    // Also called after initState but before build
   }
 
   @override
   void didUpdateWidget(covariant ${pascalCaseScreenName}Screen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Widget configuration changed
   }
 
   @override
   void dispose() {
-    // Permanent removal of a tree stent
     super.dispose();
   }
   /* #endregion */

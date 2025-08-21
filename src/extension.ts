@@ -1,12 +1,14 @@
 import { ExtensionContext } from "vscode";
+import { registerCreateBlocCommand } from "./commands/createBlocCommand";
+import { registerCreateFetchBlocCommand } from "./commands/createFetchBlocCommand";
 import { registerCreateFeatureCommand } from "./commands/createFeatureCommand";
-import { registerCreateDevolutionFeatureCommand } from "./commands/createDevolutionFeatureCommand";
-import { registerCreateDevolutionScreenCommand } from "./commands/createDevolutionScreenCommand";
+import { registerCreateScreenCommand } from "./commands/createScreenCommand";
 
 export function activate(context: ExtensionContext) {
+  registerCreateBlocCommand(context);
   registerCreateFeatureCommand(context);
-  registerCreateDevolutionFeatureCommand(context);
-  registerCreateDevolutionScreenCommand(context);
+  registerCreateFetchBlocCommand(context);
+  registerCreateScreenCommand(context);
 }
 
 export function deactivate() {}

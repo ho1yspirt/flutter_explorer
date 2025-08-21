@@ -3,7 +3,13 @@
   "name": "flutter-explorer",
   "displayName": "Flutter Explorer",
   "description": "Custom snippets",
-  "version": "0.0.1",
+  "publisher": "amirasake",
+  "author": {
+    "name": "Amir Asake",
+    "email": "amir.asakeev.r@gmail.com",
+    "url": "https://www.linkedin.com/in/amirasake/"
+  },
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/ho1yspirt/flutter_explorer.git"
@@ -20,32 +26,41 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.createCreateFeatureFolder",
-        "title": "FE: New Feature"
+        "command": "extension.createBloc",
+        "title": ": New Bloc"
       },
       {
-        "command": "extension.createDevolutionFeatureFolder",
-        "title": "FE: New Devolution Feature"
+        "command": "extension.createFeatureFolder",
+        "title": ": New Feature"
       },
       {
-        "command": "extension.createDevolutionScreen",
-        "title": "FE: New Devolution Screen"
+        "command": "extension.createFetchBloc",
+        "title": ": New Fetch Bloc"
+      },
+      {
+        "command": "extension.createScreen",
+        "title": ": New Screen"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "extension.createCreateFeatureFolder",
+          "command": "extension.createBloc",
           "when": "explorerResourceIsFolder",
           "group": "flutterExplorerGroup@1"
         },
         {
-          "command": "extension.createDevolutionFeatureFolder",
+          "command": "extension.createFeatureFolder",
           "when": "explorerResourceIsFolder",
           "group": "flutterExplorerGroup@1"
         },
         {
-          "command": "extension.createDevolutionScreen",
+          "command": "extension.createFetchBloc",
+          "when": "explorerResourceIsFolder",
+          "group": "flutterExplorerGroup@1"
+        },
+        {
+          "command": "extension.createScreen",
           "when": "explorerResourceIsFolder",
           "group": "flutterExplorerGroup@1"
         }
